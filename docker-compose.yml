@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: bytebite
+      POSTGRES_USER: bytebite
+      POSTGRES_PASSWORD: bytebite
+    ports:
+      - "5432:5432"
