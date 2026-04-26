@@ -1,5 +1,6 @@
 package com.askaragoz.bytebite.restaurant;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class RestaurantController {
         return restaurantService.getAllRestaurants();
     }
 
+    @PreAuthorize("hasAuthority('RESTAURANT_OWNER')")
     @PostMapping
     public Restaurant createRestaurant(@RequestBody Restaurant restaurant){
         return restaurantService.createRestaurant(restaurant);
