@@ -1,5 +1,6 @@
 package com.askaragoz.bytebite.menuitem;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class MenuItemController{
         return menuItemService.getAllMenuItems(restaurantId);
     }
 
+    @PreAuthorize("hasAuthority('RESTAURANT_OWNER')")
     @PostMapping
     public MenuItem createMenuItem(@RequestBody MenuItem menuItem){
         return menuItemService.createMenuItem(menuItem);
