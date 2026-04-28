@@ -19,6 +19,9 @@ public class RestaurantController {
         return restaurantService.getAllRestaurants();
     }
 
+    @GetMapping("/{restaurantId}")
+    public Restaurant getRestaurantById(@PathVariable Long restaurantId){ return restaurantService.getRestaurantById(restaurantId); }
+
     @PreAuthorize("hasAuthority('RESTAURANT_OWNER')")
     @PostMapping
     public Restaurant createRestaurant(@RequestBody Restaurant restaurant){
