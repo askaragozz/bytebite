@@ -46,7 +46,7 @@ public class ElasticsearchService {
                 .collect(Collectors.joining(","));
 
         String body = """
-                {"query":{"multi_match":{"query":"%s","fields":[%s]}}}
+                {"query":{"multi_match":{"query":"%s","type":"phrase_prefix","fields":[%s]}}}
                 """.formatted(query, fieldsJson);
 
         HttpHeaders headers = new HttpHeaders();
@@ -54,7 +54,7 @@ public class ElasticsearchService {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                fullUrl, HttpMethod.GET, request,
+                fullUrl, HttpMethod.POST, request,
                 new ParameterizedTypeReference<>() {});
 
         Map<String, Object> hits = (Map<String, Object>) response.getBody().get("hits");
