@@ -2,6 +2,7 @@ package com.askaragoz.bytebite.delivery;
 
 import com.askaragoz.bytebite.order.Order;
 import com.askaragoz.bytebite.order.OrderRepository;
+import com.askaragoz.bytebite.order.OrderStatus;
 import com.askaragoz.bytebite.user.User;
 import com.askaragoz.bytebite.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,13 @@ public class DeliveryService {
                 .orElseThrow(() -> new RuntimeException("Delivery not found"));
         delivery.setStatus(status);
         deliveryRepository.save(delivery);
+
+        if (status == DeliveryStatus.DELIVERED) {
+            Order order = delivery.getOrder();
+            order.setStatus(OrderStatus.DELIVERED);
+            orderRepository.save(order);
+        }
+
         deliveryEventProducer.publishDeliveryAssigned(deliveryId, status);
         return delivery;
     }
