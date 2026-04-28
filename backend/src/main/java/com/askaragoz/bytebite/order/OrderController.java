@@ -22,8 +22,14 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping
-    public Order createOrder(@RequestBody Order order){
-        return orderService.createOrder(order);
+    public Order createOrder(@RequestBody OrderRequest request){
+        return orderService.createOrder(request);
+    }
+
+    @PreAuthorize("hasAuthority('RESTAURANT_OWNER')")
+    @GetMapping("/restaurant/{restaurantId}")
+    public List<Order> getOrdersByRestaurant(@PathVariable Long restaurantId) {
+        return orderService.getOrdersByRestaurant(restaurantId);
     }
 
     @PreAuthorize("hasAuthority('RESTAURANT_OWNER') or hasAuthority('DRIVER')")
