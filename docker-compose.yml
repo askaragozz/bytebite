@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: bytebite
     ports:
       - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     environment:
@@ -60,3 +62,6 @@ services:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_DATA_REDIS_HOST: redis
       SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
+
+volumes:
+  postgres_data:

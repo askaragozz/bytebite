@@ -16,18 +16,16 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const _resolveUser = async (email, jwt) => {
-    const res = await api.get('/api/users', {
-      headers: { Authorization: `Bearer ${jwt}` },
-    });
-    return res.data.find((u) => u.email === email);
+  const _resolveUser = async () => {
+    const res = await api.get('/api/users/me');
+    return res.data;
   };
 
   const login = async (email, password) => {
     const res = await api.post('/api/users/login', { email, password });
     const jwt = res.data;
-    const currentUser = await _resolveUser(email, jwt);
     localStorage.setItem('token', jwt);
+    const currentUser = await _resolveUser();
     localStorage.setItem('user', JSON.stringify(currentUser));
     setToken(jwt);
     setUser(currentUser);
@@ -37,8 +35,8 @@ export function AuthProvider({ children }) {
   const register = async (userData) => {
     const res = await api.post('/api/users/register', userData);
     const jwt = res.data;
-    const currentUser = await _resolveUser(userData.email, jwt);
     localStorage.setItem('token', jwt);
+    const currentUser = await _resolveUser();
     localStorage.setItem('user', JSON.stringify(currentUser));
     setToken(jwt);
     setUser(currentUser);
