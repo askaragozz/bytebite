@@ -72,7 +72,7 @@ export default function RestaurantMenu() {
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <div className="flex flex-col gap-3">
-          {items.filter((i) => i.available).map((item) => (
+          {items.filter((i) => i.isAvailable).map((item) => (
             <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between">
               <div>
                 <p className="font-medium text-gray-800">{item.name}</p>
