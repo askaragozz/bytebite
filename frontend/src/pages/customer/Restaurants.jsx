@@ -5,25 +5,44 @@ import Navbar from '../../components/Navbar';
 
 export default function Restaurants() {
   const [restaurants, setRestaurants] = useState([]);
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/api/restaurants')
+    setLoading(true);
+    setError('');
+    const request = query.trim()
+      ? api.get('/api/restaurants/search', { params: { query } })
+      : api.get('/api/restaurants');
+
+    request
       .then((res) => setRestaurants(res.data))
       .catch(() => setError('Failed to load restaurants.'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [query]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Restaurants</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Restaurants</h2>
+          <input
+            type="text"
+            placeholder="Search restaurants…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          />
+        </div>
 
         {loading && <p className="text-gray-500">Loading…</p>}
         {error && <p className="text-red-500">{error}</p>}
+        {!loading && restaurants.length === 0 && query && (
+          <p className="text-gray-400">No restaurants found for "{query}".</p>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {restaurants.map((r) => (
