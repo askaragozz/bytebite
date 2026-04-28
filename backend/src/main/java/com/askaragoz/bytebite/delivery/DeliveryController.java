@@ -14,6 +14,11 @@ public class DeliveryController {
         this.deliveryService = deliveryService;
     }
 
+    @PostMapping
+    public Delivery createDelivery(@RequestBody DeliveryRequest request) {
+        return deliveryService.createDelivery(request);
+    }
+
     @GetMapping("/order/{orderId}")
     public Optional<Delivery> getAllDeliveryByOrder(@PathVariable Long orderId){
         return deliveryService.getAllDeliveryByOrder(orderId);
