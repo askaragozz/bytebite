@@ -22,6 +22,11 @@ public class RestaurantController {
     @GetMapping("/{restaurantId}")
     public Restaurant getRestaurantById(@PathVariable Long restaurantId){ return restaurantService.getRestaurantById(restaurantId); }
 
+    @GetMapping("/search")
+    public List<RestaurantDocument> searchRestaurants(@RequestParam String query){
+        return restaurantService.searchRestaurants(query);
+    }
+
     @PreAuthorize("hasAuthority('RESTAURANT_OWNER')")
     @PostMapping
     public Restaurant createRestaurant(@RequestBody Restaurant restaurant){
