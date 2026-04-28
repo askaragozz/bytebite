@@ -44,6 +44,11 @@ public class UserController{
         return jwtUtil.generateToken(user.getEmail());
     }
 
+    @GetMapping("/drivers")
+    public List<User> getDrivers() {
+        return userService.getUsersByRole(UserRole.DRIVER);
+    }
+
     @GetMapping("/me")
     public User getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         return userService.getUserByEmail(userDetails.getUsername());

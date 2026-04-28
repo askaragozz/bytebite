@@ -17,18 +17,23 @@ const STATUS_COLORS = {
 export default function OwnerOrders() {
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
+  const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(null);
+  const [assigning, setAssigning] = useState(null);
+  const [deliveryForms, setDeliveryForms] = useState({});
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchData = async () => {
       try {
-        const restaurantsRes = await api.get(`/api/restaurants/owner/${user.id}`);
-        const restaurants = restaurantsRes.data;
+        const [restaurantsRes, driversRes] = await Promise.all([
+          api.get(`/api/restaurants/owner/${user.id}`),
+          api.get('/api/users/drivers'),
+        ]);
 
         const ordersByRestaurant = await Promise.all(
-          restaurants.map((r) =>
+          restaurantsRes.data.map((r) =>
             api.get(`/api/orders/restaurant/${r.id}`).then((res) =>
               res.data.map((order) => ({ ...order, restaurantName: r.name }))
             )
@@ -40,6 +45,7 @@ export default function OwnerOrders() {
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         setOrders(allOrders);
+        setDrivers(driversRes.data);
       } catch {
         setError('Failed to load orders.');
       } finally {
@@ -47,7 +53,7 @@ export default function OwnerOrders() {
       }
     };
 
-    fetchOrders();
+    fetchData();
   }, [user.id]);
 
   const handleStatusUpdate = async (orderId, status) => {
@@ -62,6 +68,33 @@ export default function OwnerOrders() {
     } finally {
       setUpdating(null);
     }
+  };
+
+  const handleAssignDelivery = async (orderId) => {
+    const form = deliveryForms[orderId] || {};
+    if (!form.driverId || !form.deliveryAddress) return;
+    setAssigning(orderId);
+    try {
+      await api.post('/api/deliveries', {
+        orderId,
+        driverId: Number(form.driverId),
+        deliveryAddress: form.deliveryAddress,
+      });
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, hasDelivery: true } : o))
+      );
+    } catch {
+      setError('Failed to assign delivery.');
+    } finally {
+      setAssigning(null);
+    }
+  };
+
+  const updateForm = (orderId, field, value) => {
+    setDeliveryForms((prev) => ({
+      ...prev,
+      [orderId]: { ...prev[orderId], [field]: value },
+    }));
   };
 
   return (
@@ -114,6 +147,44 @@ export default function OwnerOrders() {
                     {updating === order.id ? 'Saving…' : 'Update'}
                   </button>
                 </div>
+              )}
+
+              {!order.hasDelivery && order.status !== 'CANCELLED' && order.status !== 'DELIVERED' && (
+                <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
+                  <p className="text-xs font-medium text-gray-500">Assign delivery</p>
+                  <div className="flex gap-2">
+                    <select
+                      value={deliveryForms[order.id]?.driverId || ''}
+                      onChange={(e) => updateForm(order.id, 'driverId', e.target.value)}
+                      className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    >
+                      <option value="">Select driver…</option>
+                      {drivers.map((d) => (
+                        <option key={d.id} value={d.id}>{d.name}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Delivery address"
+                      value={deliveryForms[order.id]?.deliveryAddress || ''}
+                      onChange={(e) => updateForm(order.id, 'deliveryAddress', e.target.value)}
+                      className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    />
+                    <button
+                      disabled={assigning === order.id}
+                      onClick={() => handleAssignDelivery(order.id)}
+                      className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {assigning === order.id ? 'Assigning…' : 'Assign'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {order.hasDelivery && (
+                <p className="mt-3 pt-3 border-t border-gray-100 text-xs text-green-600 font-medium">
+                  ✓ Delivery assigned
+                </p>
               )}
             </div>
           ))}
