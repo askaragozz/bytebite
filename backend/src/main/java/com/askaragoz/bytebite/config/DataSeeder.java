@@ -3,7 +3,7 @@ package com.askaragoz.bytebite.config;
 import com.askaragoz.bytebite.menuitem.MenuItem;
 import com.askaragoz.bytebite.menuitem.MenuItemRepository;
 import com.askaragoz.bytebite.restaurant.Restaurant;
-import com.askaragoz.bytebite.restaurant.RestaurantRepository;
+import com.askaragoz.bytebite.restaurant.RestaurantService;
 import com.askaragoz.bytebite.user.User;
 import com.askaragoz.bytebite.user.UserRepository;
 import com.askaragoz.bytebite.user.UserRole;
@@ -23,7 +23,7 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
-    private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
     private final MenuItemRepository menuItemRepository;
     private final PasswordEncoder passwordEncoder;
     private final CacheManager cacheManager;
@@ -51,21 +51,21 @@ public class DataSeeder implements CommandLineRunner {
         userRepository.save(new User(null, "Frank Lee", "frank@bytebite.dev", pw, UserRole.DRIVER, now));
 
         // Mario's restaurants (Italian)
-        Restaurant pizzeria = restaurantRepository.save(new Restaurant(null, "Mario's Pizzeria", "Authentic Neapolitan pizza", "Italian", "123 Main St", true, 4.7, now, owner1.getId()));
-        Restaurant trattoria = restaurantRepository.save(new Restaurant(null, "La Trattoria", "Classic Italian comfort food", "Italian", "45 Olive Lane", true, 4.3, now, owner1.getId()));
-        Restaurant gelato = restaurantRepository.save(new Restaurant(null, "Gelato & Co", "Artisan gelato and espresso", "Italian", "8 Piazza Rd", false, 4.8, now, owner1.getId()));
+        Restaurant pizzeria = restaurantService.createRestaurant(new Restaurant(null, "Mario's Pizzeria", "Authentic Neapolitan pizza", "Italian", "123 Main St", true, 4.7, now, owner1.getId()));
+        Restaurant trattoria = restaurantService.createRestaurant(new Restaurant(null, "La Trattoria", "Classic Italian comfort food", "Italian", "45 Olive Lane", true, 4.3, now, owner1.getId()));
+        Restaurant gelato = restaurantService.createRestaurant(new Restaurant(null, "Gelato & Co", "Artisan gelato and espresso", "Italian", "8 Piazza Rd", false, 4.8, now, owner1.getId()));
 
         // Sarah's restaurants (Asian)
-        Restaurant sushi = restaurantRepository.save(new Restaurant(null, "Sakura Sushi", "Fresh rolls and nigiri", "Japanese", "77 Cherry Blvd", true, 4.6, now, owner2.getId()));
-        Restaurant ramen = restaurantRepository.save(new Restaurant(null, "Ramen House", "Rich tonkotsu and miso broths", "Japanese", "12 Noodle St", true, 4.4, now, owner2.getId()));
-        Restaurant thai = restaurantRepository.save(new Restaurant(null, "Bangkok Bites", "Authentic Thai street food", "Thai", "99 Spice Ave", true, 4.5, now, owner2.getId()));
-        Restaurant dim = restaurantRepository.save(new Restaurant(null, "Dim Sum Palace", "Traditional dim sum all day", "Chinese", "3 Dynasty Ct", false, 4.2, now, owner2.getId()));
+        Restaurant sushi = restaurantService.createRestaurant(new Restaurant(null, "Sakura Sushi", "Fresh rolls and nigiri", "Japanese", "77 Cherry Blvd", true, 4.6, now, owner2.getId()));
+        Restaurant ramen = restaurantService.createRestaurant(new Restaurant(null, "Ramen House", "Rich tonkotsu and miso broths", "Japanese", "12 Noodle St", true, 4.4, now, owner2.getId()));
+        Restaurant thai = restaurantService.createRestaurant(new Restaurant(null, "Bangkok Bites", "Authentic Thai street food", "Thai", "99 Spice Ave", true, 4.5, now, owner2.getId()));
+        Restaurant dim = restaurantService.createRestaurant(new Restaurant(null, "Dim Sum Palace", "Traditional dim sum all day", "Chinese", "3 Dynasty Ct", false, 4.2, now, owner2.getId()));
 
         // James's restaurants (Western)
-        Restaurant burger = restaurantRepository.save(new Restaurant(null, "Burger Barn", "Juicy smash burgers", "American", "456 Oak Ave", true, 4.2, now, owner3.getId()));
-        Restaurant bbq = restaurantRepository.save(new Restaurant(null, "Smoke & Grill", "Slow smoked BBQ ribs and brisket", "BBQ", "88 Pitmaster Rd", true, 4.6, now, owner3.getId()));
-        Restaurant taco = restaurantRepository.save(new Restaurant(null, "Taco Loco", "Street tacos and fresh guac", "Mexican", "21 Fiesta Blvd", true, 4.3, now, owner3.getId()));
-        Restaurant diner = restaurantRepository.save(new Restaurant(null, "The Classic Diner", "All-day breakfast and comfort food", "American", "5 Retro Ave", true, 4.1, now, owner3.getId()));
+        Restaurant burger = restaurantService.createRestaurant(new Restaurant(null, "Burger Barn", "Juicy smash burgers", "American", "456 Oak Ave", true, 4.2, now, owner3.getId()));
+        Restaurant bbq = restaurantService.createRestaurant(new Restaurant(null, "Smoke & Grill", "Slow smoked BBQ ribs and brisket", "BBQ", "88 Pitmaster Rd", true, 4.6, now, owner3.getId()));
+        Restaurant taco = restaurantService.createRestaurant(new Restaurant(null, "Taco Loco", "Street tacos and fresh guac", "Mexican", "21 Fiesta Blvd", true, 4.3, now, owner3.getId()));
+        Restaurant diner = restaurantService.createRestaurant(new Restaurant(null, "The Classic Diner", "All-day breakfast and comfort food", "American", "5 Retro Ave", true, 4.1, now, owner3.getId()));
 
         // Mario's Pizzeria menu
         menuItemRepository.saveAll(List.of(
