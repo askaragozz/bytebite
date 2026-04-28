@@ -22,6 +22,11 @@ public class RestaurantController {
     @GetMapping("/{restaurantId}")
     public Restaurant getRestaurantById(@PathVariable Long restaurantId){ return restaurantService.getRestaurantById(restaurantId); }
 
+    @GetMapping("/owner/{ownerId}")
+    public List<Restaurant> getRestaurantsByOwner(@PathVariable Long ownerId) {
+        return restaurantService.getRestaurantsByOwner(ownerId);
+    }
+
     @GetMapping("/search")
     public List<RestaurantDocument> searchRestaurants(@RequestParam String query){
         return restaurantService.searchRestaurants(query);

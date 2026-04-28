@@ -27,4 +27,5 @@ public class Restaurant implements Serializable {
     private Boolean isOpen;
     private Double rating;
     private LocalDateTime createdAt;
+    private Long ownerId;
 }

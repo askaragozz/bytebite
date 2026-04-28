@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
+import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/Navbar';
 
 export default function CreateRestaurant() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -29,6 +31,7 @@ export default function CreateRestaurant() {
       await api.post('/api/restaurants', {
         ...form,
         rating: form.rating ? parseFloat(form.rating) : null,
+        ownerId: user.id,
       });
       navigate('/owner/dashboard');
     } catch {
