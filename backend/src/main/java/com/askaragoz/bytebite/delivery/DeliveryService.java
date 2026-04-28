@@ -8,9 +8,12 @@ import java.util.Optional;
 @Service
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryEventProducer deliveryEventProducer;
 
-    public DeliveryService(DeliveryRepository deliveryRepository){
+    public DeliveryService(DeliveryRepository deliveryRepository,
+                           DeliveryEventProducer deliveryEventProducer){
         this.deliveryRepository = deliveryRepository;
+        this.deliveryEventProducer = deliveryEventProducer;
     }
 
     public Optional<Delivery> getAllDeliveryByOrder(Long orderId){
@@ -25,6 +28,8 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new RuntimeException("Delivery not found"));
         delivery.setStatus(status);
-        return deliveryRepository.save(delivery);
+        deliveryRepository.save(delivery);
+        deliveryEventProducer.publishDeliveryAssigned(deliveryId, status);
+        return delivery;
     }
 }
