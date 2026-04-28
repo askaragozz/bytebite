@@ -7,9 +7,11 @@ import java.util.List;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderEventProducer orderEventProducer;
 
-    public OrderService(OrderRepository orderRepository){
+    public OrderService(OrderRepository orderRepository, OrderEventProducer orderEventProducer){
         this.orderRepository = orderRepository;
+        this.orderEventProducer = orderEventProducer;
     }
 
     public List<Order> getOrdersByUser(Long userId) {
@@ -17,7 +19,9 @@ public class OrderService {
     }
 
     public Order createOrder(Order order){
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        orderEventProducer.publishOrderPlaced(order.getId());
+        return order;
     }
 
     public Order updateOrderStatus(Long orderId, OrderStatus status){
