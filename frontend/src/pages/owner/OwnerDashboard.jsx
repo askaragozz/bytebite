@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
+import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/Navbar';
 
 export default function OwnerDashboard() {
@@ -8,9 +9,10 @@ export default function OwnerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    api.get('/api/restaurants')
+    api.get(`/api/restaurants/owner/${user.id}`)
       .then((res) => setRestaurants(res.data))
       .catch(() => setError('Failed to load restaurants.'))
       .finally(() => setLoading(false));

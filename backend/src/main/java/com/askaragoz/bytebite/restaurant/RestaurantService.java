@@ -34,6 +34,10 @@ public class RestaurantService {
         return restaurant;
     }
 
+    public List<Restaurant> getRestaurantsByOwner(Long ownerId) {
+        return restaurantRepository.findByOwnerId(ownerId);
+    }
+
     public List<RestaurantDocument> searchRestaurants(String query) {
         return restaurantSearchRepository.search(query);
     }
