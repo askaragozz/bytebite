@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import Landing from './pages/Landing';
 
 import Restaurants from './pages/customer/Restaurants';
 import RestaurantMenu from './pages/customer/RestaurantMenu';
@@ -18,11 +19,11 @@ import MyDeliveries from './pages/driver/MyDeliveries';
 
 function RootRedirect() {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Landing />;
   if (user.role === 'CUSTOMER') return <Navigate to="/customer/restaurants" replace />;
   if (user.role === 'RESTAURANT_OWNER') return <Navigate to="/owner/dashboard" replace />;
   if (user.role === 'DRIVER') return <Navigate to="/driver/deliveries" replace />;
-  return <Navigate to="/login" replace />;
+  return <Landing />;
 }
 
 export default function App() {

@@ -106,7 +106,11 @@ export default function OwnerOrders() {
         {loading && <p className="text-gray-500">Loading…</p>}
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {!loading && orders.length === 0 && (
-          <p className="text-gray-400">No orders yet.</p>
+          <div className="text-center py-16">
+            <p className="text-4xl mb-3">📋</p>
+            <p className="font-medium text-gray-700">No orders yet</p>
+            <p className="text-sm text-gray-400 mt-1">Orders from your restaurants will appear here.</p>
+          </div>
         )}
 
         <div className="flex flex-col gap-4">
