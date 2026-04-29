@@ -9,6 +9,7 @@ export default function RestaurantMenu() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const [restaurant, setRestaurant] = useState(null);
   const [items, setItems] = useState([]);
   const [cart, setCart] = useState({});
   const [loading, setLoading] = useState(true);
@@ -16,8 +17,14 @@ export default function RestaurantMenu() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get(`/api/menu-items/restaurant/${id}`)
-      .then((res) => setItems(res.data))
+    Promise.all([
+      api.get(`/api/restaurants/${id}`),
+      api.get(`/api/menu-items/restaurant/${id}`),
+    ])
+      .then(([restaurantRes, itemsRes]) => {
+        setRestaurant(restaurantRes.data);
+        setItems(itemsRes.data);
+      })
       .catch(() => setError('Failed to load menu.'))
       .finally(() => setLoading(false));
   }, [id]);
@@ -64,12 +71,27 @@ export default function RestaurantMenu() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="max-w-3xl mx-auto px-6 py-8">
-        <button onClick={() => navigate('/customer/restaurants')} className="text-sm text-orange-500 hover:underline mb-4 block">
+        <button onClick={() => navigate('/customer/restaurants')} className="text-sm text-orange-500 hover:underline mb-6 block">
           ← Back to restaurants
         </button>
 
         {loading && <p className="text-gray-500">Loading menu…</p>}
         {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        {restaurant && (
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-1">
+              <h2 className="text-2xl font-bold text-gray-900">{restaurant.name}</h2>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${restaurant.isOpen ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                {restaurant.isOpen ? 'Open' : 'Closed'}
+              </span>
+            </div>
+            <p className="text-sm text-gray-500">{restaurant.cuisineType} · {restaurant.address}</p>
+            {restaurant.description && (
+              <p className="text-sm text-gray-400 mt-1">{restaurant.description}</p>
+            )}
+          </div>
+        )}
 
         <div className="flex flex-col gap-3">
           {items.filter((i) => i.isAvailable).map((item) => (
