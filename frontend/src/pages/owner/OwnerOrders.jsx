@@ -23,6 +23,7 @@ export default function OwnerOrders() {
   const [updating, setUpdating] = useState(null);
   const [assigning, setAssigning] = useState(null);
   const [deliveryForms, setDeliveryForms] = useState({});
+  const [statusSelects, setStatusSelects] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,8 +129,8 @@ export default function OwnerOrders() {
               {order.status !== 'DELIVERED' && order.status !== 'CANCELLED' && (
                 <div className="flex items-center gap-2 mt-3">
                   <select
-                    id={`status-${order.id}`}
-                    defaultValue={order.status}
+                    value={statusSelects[order.id] ?? order.status}
+                    onChange={(e) => setStatusSelects((prev) => ({ ...prev, [order.id]: e.target.value }))}
                     className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                   >
                     {ORDER_STATUSES.map((s) => (
@@ -138,10 +139,7 @@ export default function OwnerOrders() {
                   </select>
                   <button
                     disabled={updating === order.id}
-                    onClick={() => {
-                      const select = document.getElementById(`status-${order.id}`);
-                      handleStatusUpdate(order.id, select.value);
-                    }}
+                    onClick={() => handleStatusUpdate(order.id, statusSelects[order.id] ?? order.status)}
                     className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                   >
                     {updating === order.id ? 'Saving…' : 'Update'}

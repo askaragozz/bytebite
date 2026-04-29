@@ -3,6 +3,7 @@ package com.askaragoz.bytebite.order;
 import com.askaragoz.bytebite.restaurant.Restaurant;
 import com.askaragoz.bytebite.user.User;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +33,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    private List<OrderItem> items;
 }

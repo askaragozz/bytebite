@@ -18,6 +18,7 @@ export default function MyDeliveries() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(null);
+  const [statusSelects, setStatusSelects] = useState({});
 
   useEffect(() => {
     api.get(`/api/deliveries/driver/${user.id}`)
@@ -72,8 +73,8 @@ export default function MyDeliveries() {
               {delivery.status !== 'DELIVERED' && (
                 <div className="flex items-center gap-2 mt-3">
                   <select
-                    defaultValue={delivery.status}
-                    id={`status-${delivery.id}`}
+                    value={statusSelects[delivery.id] ?? delivery.status}
+                    onChange={(e) => setStatusSelects((prev) => ({ ...prev, [delivery.id]: e.target.value }))}
                     className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                   >
                     {DELIVERY_STATUSES.map((s) => (
@@ -82,10 +83,7 @@ export default function MyDeliveries() {
                   </select>
                   <button
                     disabled={updating === delivery.id}
-                    onClick={() => {
-                      const select = document.getElementById(`status-${delivery.id}`);
-                      handleStatusChange(delivery.id, select.value);
-                    }}
+                    onClick={() => handleStatusChange(delivery.id, statusSelects[delivery.id] ?? delivery.status)}
                     className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                   >
                     {updating === delivery.id ? 'Saving…' : 'Update'}

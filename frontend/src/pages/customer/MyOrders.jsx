@@ -49,7 +49,14 @@ export default function MyOrders() {
                   {order.status.replace(/_/g, ' ')}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 font-medium">Total: ${order.totalPrice?.toFixed(2)}</p>
+              {order.items?.length > 0 && (
+                <ul className="mt-2 text-sm text-gray-500 space-y-0.5">
+                  {order.items.map((item) => (
+                    <li key={item.id}>{item.menuItem?.name} × {item.quantity}</li>
+                  ))}
+                </ul>
+              )}
+              <p className="text-sm text-gray-600 font-medium mt-2">Total: ${order.totalPrice?.toFixed(2)}</p>
             </div>
           ))}
         </div>

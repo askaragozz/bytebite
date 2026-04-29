@@ -2,6 +2,7 @@ package com.askaragoz.bytebite.order;
 
 
 import com.askaragoz.bytebite.menuitem.MenuItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class OrderItem {
     private Long id;
     private Integer quantity;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
